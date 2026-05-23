@@ -7,6 +7,9 @@
 
 rng(1)
 
+%used to make Figure 9,10 in "The effect of predation on the dynamics of
+%Chronic Wasting Disease in deer" 
+
 % in this file we add a delayed control
 
 % the reactions are:

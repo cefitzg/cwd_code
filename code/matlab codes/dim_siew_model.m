@@ -2,6 +2,9 @@ clear
 clc
 close all
 
+%used to make Figure 11 in "The effect of predation on the dynamics of
+%Chronic Wasting Disease in deer" 
+
 %Use Keener's plotting options 
  formatSpecF = '%6.2f\n';
  set(0,                           ...

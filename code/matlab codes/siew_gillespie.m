@@ -4,6 +4,9 @@
 
 %used chatgpt 5.5 to catch an error in Ch and debug a plotting issue. 
 
+%used to make Figure 12 in "The effect of predation on the dynamics of
+%Chronic Wasting Disease in deer" 
+
 close all; clear; clc
 
 rng(1)

@@ -1,4 +1,6 @@
-%make figures for CWD from xpp data files
+%make figures for CWD from xpp data files 
+%figures 2 in "The effect of predation on the dynamics of
+%Chronic Wasting Disease in deer" 
 clear all 
 set(0,                           ...
    'defaultaxesfontsize', 20,   ...

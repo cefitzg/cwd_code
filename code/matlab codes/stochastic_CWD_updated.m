@@ -7,6 +7,9 @@
 
 rng(1)
 
+%%used to make Figure 4-7 in "The effect of predation on the dynamics of
+%Chronic Wasting Disease in deer" 
+
 % reaction 1 birth  s-> s+1 rate r
 % reaction 2 death s -> s-1 rate d
 % reaction 3 infection S + E -> I  rate gamma_e

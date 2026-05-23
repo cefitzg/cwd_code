@@ -1,6 +1,9 @@
 %modified Gillespie algorithm for S-I-E-W model 
 close all; clear; clc
 
+%used to make Figure 13 in "The effect of predation on the dynamics of
+%Chronic Wasting Disease in deer" 
+
 rng(1)
 
 global r K Kp gami game eps mue mui rho alp omega kmw K2 rw
