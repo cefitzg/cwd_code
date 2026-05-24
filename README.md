@@ -14,7 +14,7 @@ MATLAB Version: 2023B
 Identifiability analysis: \
 code/identifiability_script/ident_cwd.jl \
 Julia version: 1.10.4 \
-StructuralIdentifiability.jl 0.5.10 \
+StructuralIdentifiability.jl 0.5.10 
 
 XPP: \
-code/xpp file/cwd.ode \
+code/xpp file/cwd.ode 
