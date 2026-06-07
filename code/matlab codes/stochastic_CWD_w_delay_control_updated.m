@@ -25,7 +25,7 @@ rng(1)
 % reaction 7  infected predation I+W-> W rate rhoi
  
 %meanwhile E changes gradually dE/dt = eps I -mue E  but continuously
- clear all 
+ clear; close all; clc 
  global r K Kp gami game eps1 mue mui rhosW rhoiW  
  formatSpecF = '%6.2f\n';
 set(0,                           ...
@@ -241,7 +241,7 @@ title( strcat('\rho_iW = ',sprintf(formatSpecF,rhoiW)),'fontsize',18)
  xlabel('s','fontsize',20)
  ylabel('i','fontsize',20)
  title( strcat('\rho_iW = ',sprintf(formatSpecF,rhoiW)),'fontsize',18)
- axis([0 K*A/A0 0 350])
+ axis([0 K*A/A0 0 425]) %updated y axis
  hold off
 
  

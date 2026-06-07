@@ -194,7 +194,7 @@ Ww(nr)=rhoiW;
  figure(25)
  plot(Ww,nprion/Kt,'*')
  xlabel('\rho_i W')
- ylabel('Probability of Disease survival')
+ ylabel('Probability of disease survival')
 
 % 
 %  plot(Td,A*X/A0,'r--',Td,A*Y/A0,'b--', 'linewidth',2)

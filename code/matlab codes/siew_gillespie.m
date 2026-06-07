@@ -46,7 +46,7 @@ A = 2000;  % (km)^2 the area for which this simulation is being done
 
 tic
 
-WRlist =  [1,2,4,5,6,20,30,50] %vary omega
+WRlist =  [1,2,4,20,30,50] %vary omega
 for nr = 1:length(WRlist)
     omega=WRlist(nr)
 

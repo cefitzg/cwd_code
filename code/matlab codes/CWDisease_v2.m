@@ -32,7 +32,7 @@ set(0,                           ...
   K = 30;
    gam = eps1*game+gami*mue;
  % the list of rho_iW values
-plist = [0,0,0.1,0.15, 0.5 ];
+plist = [0,0.1,0.15, 0.5 ];
  
  figure(10)
  plot(K*ones(length(plist),1),plist,'*')

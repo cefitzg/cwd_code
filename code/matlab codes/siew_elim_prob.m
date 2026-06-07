@@ -6,7 +6,7 @@ close all; clear; clc
 
 rng(1)
 
-global r K Kp gami game eps1 mue mui rho alp omega kmw K2 rw
+global r K Kp gami game eps1 mue mui rho alp omega kmw K2 rw rwb rwd
 formatSpecF = '%6.2f\n';
 set(0,                           ...
     'defaultaxesfontsize', 20,   ...
