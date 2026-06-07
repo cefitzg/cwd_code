@@ -3,6 +3,9 @@
 
 %Jim's code, modified to make sure R1 has Kp instead K, 5-22-26. 
 
+%Changed eps to eps1. eps is not protected but rather unsafe to use in
+%MATLAB. 6-6
+
 %also added rng
 
 rng(1)
@@ -20,7 +23,7 @@ rng(1)
 
 %meanwhile E changes gradually dE/dt = eps I -mue E  but continuously
 clear all; clc; close all; 
-global r K Kp gami game eps mue mui rhosW rhoiW
+global r K Kp gami game eps1 mue mui rhosW rhoiW
 formatSpecF = '%6.2f\n';
 set(0,                           ...
     'defaultaxesfontsize', 20,   ...
@@ -43,7 +46,7 @@ rhorat = 0.5;
 mui = 0.6; % per year infected deathrate %
 mue = 0.2;
 
-eps = 0.1 ; %prion mass/infected density %per year
+eps1 = 0.1 ; %prion mass/infected density %per year
 
 
 % now some simulations:
@@ -125,7 +128,7 @@ for nr = 1:  length(WRlist)
         s = max(s,1); % this is to prevent s from going extinct
 
         % first calculate the maximal value of e for the future
-        Estr = max(e,eps*i*A0/(A*mue));
+        Estr = max(e,eps1*i*A0/(A*mue));
 
         h(:,1) = max(c(1)*s.*(1-(s+i)*R),0) ; %reaction rate 1
         h(:,2) = c(2)*s;
@@ -146,7 +149,7 @@ for nr = 1:  length(WRlist)
         T(:,j) =delt+T(:,j-1); % time of next reaction
 
         % use current value of i to update the e concentration
-        e  = eps*i*A0/(A*mue)+(e -eps*i*A0/(A*mue)).*exp(-mue*delt);
+        e  = eps1*i*A0/(A*mue)+(e -eps1*i*A0/(A*mue)).*exp(-mue*delt);
         for k = 1:Kt
             rk  = min(find(rn(k,2) <=hc(k,:)/H(k))); % this determines which reaction occurs
             if (rk  == 3)  %for Poisson thinning
@@ -263,7 +266,7 @@ legend('\rho_iW=0','\rho_iW=0.1','\rho_iW=0.5')
 hold off
 %the right hand side for ode simulation:
 function s_prime=deRHS(t,s)
-global r K gami game eps mue mui rhoiW   rhosW
+global r K gami game eps1 mue mui rhoiW   rhosW
 S = s(1);
 II = s(2);
 E = s(3);
@@ -271,7 +274,7 @@ fS= r*S*(1- (S+II)/K)-game*S*E -gami*S*II- rhosW*S ;
 
 fII=game*S*E +gami*S*II-mui*II-rhoiW*II ;
 
-fE=eps*II-mue*E;
+fE=eps1*II-mue*E;
 
 
 s_prime = [fS,fII, fE  ]';

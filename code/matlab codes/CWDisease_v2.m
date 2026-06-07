@@ -1,9 +1,10 @@
 % chronic wasting disease ode model 
 %figures 1 and 3 in "The effect of predation on the dynamics of
 %Chronic Wasting Disease in deer" 
+%updated so eps is eps1, as it is safer in MATLAB. 
 function  desolver
 clear all; clc; close all; 
-global game gami K eps  mue mui  rhosW rhoiW  r rhofac gam xiW xifac tend Wmx
+global game gami K eps1  mue mui  rhosW rhoiW  r rhofac gam xiW xifac tend Wmx
 
 set(0,                           ...
    'defaultaxesfontsize', 20,   ...
@@ -24,16 +25,16 @@ set(0,                           ...
  game = 1;  %wlog
  gami = 0.1;
   
- eps = 0.1 ;
+ eps1 = 0.1 ;
   rhofac = 0.5;
  xifac=0; 
  
   K = 30;
-   gam = eps*game+gami*mue;
+   gam = eps1*game+gami*mue;
  % the list of rho_iW values
 plist = [0,0,0.1,0.15, 0.5 ];
  
- % figure(10)
+ figure(10)
  plot(K*ones(length(plist),1),plist,'*')
  hold on
 
@@ -84,7 +85,7 @@ end
    rhosW =  rhoiW*rhofac;
    xiW = xifac*rhoiW;
   
-  Kt = r*mue*( mui  +  rhoiW)./( eps.*(1+xiW)*game.*(r - rhosW) + gami*mue*r -  gami*mue*rhosW);
+  Kt = r*mue*( mui  +  rhoiW)./( eps1.*(1+xiW)*game.*(r - rhosW) + gami*mue*r -  gami*mue*rhosW);
   
   figure(10)
 plot( Kt, rhoiW , Kt,  r*ones(length(K),1)/rhofac)
@@ -116,7 +117,7 @@ end
 
 %the right hand side for ode simulation:
 function s_prime=deRHS(t,s)
-global game gami K eps  mue mui  rhosW rhoiW  r xiW
+global game gami K eps1  mue mui  rhosW rhoiW  r xiW
 S = s(1);
 II = s(2);
 E = s(3);
@@ -125,21 +126,21 @@ fS= r*S*(1- (S+II)/K)-game*S*E -gami*S*II -rhosW*S;
                 
 fII=game*S*E+ gami*S*II -mui*II-rhoiW*II;
                   
-fE=eps*(1+xiW)*II-mue*E;
+fE=eps1*(1+xiW)*II-mue*E;
 
  s_prime = [fS,fII, fE]'  ;
 end
 
 % the Hopf bifurcation curve
 function out = Hpf(K,rhoiW)
-global  game gami  eps  mue mui r rhofac xifac 
+global  game gami  eps1  mue mui r rhofac xifac 
  rhosW=rhoiW*rhofac;
  xiW = xifac*rhoiW;
-    gam = eps*(1+xiW)*game+gami*mue;
+    gam = eps1*(1+xiW)*game+gami*mue;
  M = rhoiW+mui;
    beta = (M.*(3*mue+r - rhosW) + M.^2 +  mue^2);
   % this formula assumes xiW=0;
-   c3=eps*game.*gam.^2.*(r-rhosW).*(gam-M*gami);
+   c3=eps1*game.*gam.^2.*(r-rhosW).*(gam-M*gami);
    c2=-gam.*r.*(gami*mue.*(2*M.^2*gami*mue-3*gam.*M.^2-3*gam.*M*mue)+beta.*gam.^2);
    c1=-mue*r^2.*(gami*mue*(M.^2*gami*mue-3*gam.*M.^2-2*gam.*M*mue)+beta.*gam.^2);
    c0=-M.*r^3*mue^3.*(gam-M*gami);

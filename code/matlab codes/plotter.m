@@ -1,14 +1,18 @@
 %make figures for CWD from xpp data files 
 %figures 2 in "The effect of predation on the dynamics of
 %Chronic Wasting Disease in deer" 
-clear all 
+
+%updated 6-6: eps --> eps1. eps is not protected, but defined in MATLAB.
+%unsafe. 
+
+clear; clc; close all; 
 set(0,                           ...
    'defaultaxesfontsize', 20,   ...
    'defaultaxeslinewidth', 1.0, ...
    'defaultlinelinewidth', 1.2, ...
    'defaultpatchlinewidth', 0.7);
 % specify parameters:
-global r mui gam eps K mue rhorat
+global r mui gam eps1 K mue rhorat
   
  r = 0.5;
  mui = 0.6;
@@ -16,9 +20,9 @@ global r mui gam eps K mue rhorat
  game = 0.8;
  gami = 0.1;
   
- eps = 0.1 ;
+ eps1 = 0.1 ;
   rhorat = 0.5;
-  gam = eps*game+gami*mue;
+  gam = eps1*game+gami*mue;
  xifac=0; 
   K=75;
 
