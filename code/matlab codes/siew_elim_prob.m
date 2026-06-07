@@ -1,12 +1,12 @@
 %modified Gillespie algorithm for S-I-E-W model 
 close all; clear; clc
 
-%used to make Figure 13 in "The effect of predation on the dynamics of
-%Chronic Wasting Disease in deer" 
+%updated 6-6 to fix carrying capacity of wolves and get r10 and r11 uniform
+%with how the deer is implemented. Also changed eps to eps1. eps is not protected but rather unsafe to use in MATLAB.
 
 rng(1)
 
-global r K Kp gami game eps mue mui rho alp omega kmw K2 rw
+global r K Kp gami game eps1 mue mui rho alp omega kmw K2 rw
 formatSpecF = '%6.2f\n';
 set(0,                           ...
     'defaultaxesfontsize', 20,   ...
@@ -22,12 +22,15 @@ mui = 0.6;
 mue=0.2;
 game = 1;  %wlog
 gami = 0.1;
-eps = 0.1 ;
+eps1 = 0.1 ;
 K = 30;  % effective carrying capacity
 Kp=b*K/(b-d);  % zero birth rate level
 alp=0.05;
 K2=3;
-rw=1;
+rwb=0.5; %updated 6-6
+rwd=0.2; %updated 6-6
+rw=rwb-rwd; %updated 6-6
+K2p=rwb*K2/(rwb-rwd);  % zero birth rate level for wolves 
 rho=0.01;
 %omega is our bifurcation parameter
 
@@ -54,7 +57,7 @@ for nr = 1:length(WRlist)
     % --- Solver ---
     % Passing parameters using an anonymous function is cleaner than 'global'
     %Gemini was used to sort plotting bug
-    [Td, S] = ode23s(@(t, s) deRHS(t, s, r, K, game, gami, eps, mue, mui, rho, alp, rw, K2, omega), tspan, s0, odeset('maxstep', 1));
+    [Td, S] = ode23s(@(t, s) deRHS(t, s, r, K, game, gami, eps1, mue, mui, rho, alp, rw, K2, omega), tspan, s0, odeset('maxstep', 1));
 
     % --- Extract Results ---
     X = S(:, 1); % Susceptible
@@ -68,18 +71,20 @@ for nr = 1:length(WRlist)
     Kt = 200;  % number of trials
 
     %set the rate constants for reactions:
-    % reaction 1 birth of S, s-> s+1
-    % reaction 2 death of S, s->s-1
-    % reaction 3 indirect infection of S, s->s-1, i-> i+1
-    % reaction 4 direct infection of S, s->s-1, i->i+1
-    % reaction 5 death of I,  i->i-1
-    % reaction 6 wolf predation of S (no impact on W), s->s-1
-    % reaction 7 wolf predation of I (no impact on W), i->i-1
+    % reaction 1 birth of sus. deer, s-> s+1 {carrying capacity folded in
+    % here}
+    % reaction 2 death of sus. deer, s->s-1 
+    % reaction 3 indirect infection of sus. deer, s->s-1, i-> i+1
+    % reaction 4 direct infection of sus. deer, s->s-1, i->i+1
+    % reaction 5 death of inf. deer,  i->i-1
+    % reaction 6 wolf predation of sus. deer (no impact on w), s->s-1
+    % reaction 7 wolf predation of inf. deer (no impact on w), i->i-1
     % new reactions due to dynamic W
-    % reaction 8 birth of wolf from predation of S w->w+1, s->s-1 {new}
-    % reaction 9 birth of wolf from predation of I w->w+1, i->i-1 {new}
-    % reaction 10 birth of wolf, w->w+1 {new}
-    % reaction 11 death of wolf from carrying capacity w->w-1. {new}
+    % reaction 8 birth of wolf from predation of sus. deer w->w+1, s->s-1 {new}
+    % reaction 9 birth of wolf from predation of inf. w->w+1, i->i-1 {new}
+    % reaction 10 birth of wolf, w->w+1 {new} {carrying capacity folded in
+    % here} 
+    % reaction 11 death of wolf {new}
 
     %specify reaction rates
     c(1) = b;  %birth rate of S
@@ -92,9 +97,9 @@ for nr = 1:length(WRlist)
     c(7) = (1-alp)*omega*rho*A0/A ; %I predation rate corrected for volume (second order reaction), no change to W in this case.
     c(8) = alp*rho*A0/A; %S predation rate corrected for volume (second order reaction), change to W in this case.
     c(9) = alp*omega*rho*A0/A; %I predation rate corrected for volume (second order reaction), change to W in this case.
-    R2 =  A0/(K2*A); %carry capacity for wolves corrected for volume (second order reaction)
-    c(10) = rw; %growth rate for wolves
-    c(11) = rw*R2; %growth rate multipled by carry capacity for wolves corrected for volume (second order reaction)
+    R2 =  A0/(K2p*A); %carry capacity for wolves corrected for volume (second order reaction) note that this changes to R2P exactly as the deer case. 
+    c(10) = rwb; %birth rate of W
+    c(11) = rwd; %death rate of W
 
     %Specify the change matrix {index = [s,i,total consumed deer,w]}
     Ch = [1,0,0,0;-1,0,0,0;-1,1,0,0;-1,1,0,0;0,-1,0,0; ...
@@ -122,9 +127,9 @@ for nr = 1:length(WRlist)
         s = max(s,1); % this is to prevent s from going extinct
 
         % first calculate the maximal value of e for the future
-        Estr = max(e,eps*i*A0/(A*mue));
+        Estr = max(e,eps1*i*A0/(A*mue));
 
-        h(:,1) = max(c(1)*s.*(1-((s)+i)*R),0) ; %reaction rate 1
+        h(:,1) = max(c(1)*s.*(1-((s)+i)*R),0) ; %carrying capacity is folded in here. 
         h(:,2) = c(2)*s;
         h(:,3) = c(3)*s.*Estr; % Using Poisson thinning
         h(:,4) = c(4)*i.*s;
@@ -133,8 +138,8 @@ for nr = 1:length(WRlist)
         h(:,7) = c(7)*i.*w;
         h(:,8) = c(8)*s.*w;
         h(:,9) = c(9)*i.*w;
-        h(:,10) = c(10)*w;
-        h(:,11) = max(c(11)*w.*(w-1),0);
+        h(:,10) = max(c(10)*w.*(1-w*R2),0); %carrying capacity is folded in here. 
+        h(:,11) = c(11)*w;
 
         hc = cumsum(h')'; % the cumulative sum of h
         H = sum(h')';
@@ -147,7 +152,7 @@ for nr = 1:length(WRlist)
         T(:,j) =delt+T(:,j-1); % time of next reaction
 
         % use current value of i to update the e concentration
-        e  = eps*i*A0/(A*mue)+(e -eps*i*A0/(A*mue)).*exp(-mue*delt);
+        e  = eps1*i*A0/(A*mue)+(e -eps1*i*A0/(A*mue)).*exp(-mue*delt);
         for k = 1:Kt
             if H(k)==0
                 disp('warn H is zero')
@@ -291,7 +296,7 @@ toc
 
 
 %ODE simulation
-function s_prime = deRHS(t, s, r, K, game, gami, eps, mue, mui, rho, alp, rw, K2, omega)
+function s_prime = deRHS(t, s, r, K, game, gami, eps1, mue, mui, rho, alp, rw, K2, omega)
 S = s(1);
 II = s(2);
 E = s(3);
@@ -299,8 +304,8 @@ W = s(4);
 
 fS = r*S*(1 - (S+II)/K) - game*S*E - gami*S*II - rho*S*W;
 fII = game*S*E + gami*S*II - mui*II - rho*omega*II*W;
-fE = eps*II - mue*E;
-fW = alp*(rho*S*W + omega*rho*II*W) + rw*W.*(1- W/K2);
+fE = eps1*II - mue*E;
+fW = rw*W.*(1- W/K2)+alp*(rho*S*W + omega*rho*II*W);
 
 s_prime = [fS; fII; fE; fW];
 end
