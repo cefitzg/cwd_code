@@ -17,7 +17,7 @@ Julia version: 1.10.4 \
 StructuralIdentifiability.jl 0.5.10 
 
 Maple scripts: \
-code/maple scripts/sie_ss.mw (computes steady state of the S-I-E model)
-code/maple scripts/siew_ss.mw (computes steady state of the S-I-E-W model)
-code/maple scripts/cwd_hopf_curve_no_w (computes hopf curve for the S-I-E model)
+code/maple scripts/sie_ss.mw (computes steady state of the S-I-E model) \
+code/maple scripts/siew_ss.mw (computes steady state of the S-I-E-W model) \
+code/maple scripts/cwd_hopf_curve_no_w (computes hopf curve for the S-I-E model) \
 Maple version: Maple 2022. 
